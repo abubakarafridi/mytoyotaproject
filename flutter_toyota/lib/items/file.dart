@@ -26,7 +26,7 @@ class FilePickerAppState extends State<FilePickerApp> {
         paths = await FilePicker.GetMultiFilePath(
             fileType : FileType.any,
             allowedExtensions: extensions);
-      } else {
+aklj      } else {
         path = await FilePicker.getFilePath(
             fileType : FileType.any,
             allowedExtensions: extensions);

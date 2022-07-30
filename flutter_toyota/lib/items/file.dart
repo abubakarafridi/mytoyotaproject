@@ -16,7 +16,7 @@ class FilePickerAppState extends State<FilePickerApp> {
   late List<String> extensions;
   bool isLoadingPath = false;
   bool isMultiPick = false;
-  late FileType fileType;
+  late FileType fileType;alkfdladjf;
 
   void _openFileExplorer() async {
     setState(() => isLoadingPath = true);

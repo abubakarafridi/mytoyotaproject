@@ -23,7 +23,7 @@ class Remarks extends StatelessWidget {
           ),
           iconTheme: const IconThemeData(color: Colors.red),
         ),
-        body: Column(children: [comment(),commentbox(),]),
+        body: SingleChildScrollView(child: Column(children: [comment(),commentbox(),FilePickerDemo()])),
           
             );
   }

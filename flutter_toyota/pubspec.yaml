@@ -38,8 +38,6 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   dropdown_formfield: ^0.1.4
   file_picker:
-  image_picker:
-  camera:
 
 
 dev_dependencies:

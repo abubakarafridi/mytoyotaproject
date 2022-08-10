@@ -8,7 +8,7 @@ void main() => runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primaryColor: Colors.black),
       home: const index(),
-      initialRoute: MyRoutes.listRoute,
+      initialRoute: MyRoutes.RemarksRoute,
       routes: {
         MyRoutes.listRoute: (context) => index(),
         MyRoutes.DealearshipRoute: (context) => DealearShip(),

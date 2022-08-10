@@ -2,152 +2,154 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
-
-class FilePickerApp extends StatefulWidget {
+class FilePickerDemo extends StatefulWidget {
   @override
-  FilePickerAppState createState() => new FilePickerAppState();
+  _FilePickerDemoState createState() => _FilePickerDemoState();
 }
 
-class FilePickerAppState extends State<FilePickerApp> {
-  late String fileName;
-  late String path;
-  late Map<String, String> paths;
-  late List<String> extensions;
-  bool isLoadingPath = false;
-  bool isMultiPick = false;
-  late FileType fileType;asdfjkl;ertuio.,
+class _FilePickerDemoState extends State<FilePickerDemo> {
+  String? _fileName;
+  List<PlatformFile>? _paths;
+  String? _directoryPath;
+  String? _extension;
+  bool _loadingPath = false;
+  bool _multiPick = false;
+  FileType _pickingType = FileType.any;
+  TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() => _extension = _controller.text);
+  }
 
   void _openFileExplorer() async {
-    setState(() => isLoadingPath = true);
+    setState(() => _loadingPath = true);
     try {
-      if (isMultiPick) {
-        path == null;
-        paths = await FilePicker.GetMultiFilePath(
-            fileType : FileType.any,
-            allowedExtensions: extensions);
-      } else {
-        path = await FilePicker.getFilePath(
-            fileType : FileType.any,
-            allowedExtensions: extensions);
-        paths == null;
-      }
+      _directoryPath = null;
+      _paths = (await FilePicker.platform.pickFiles(
+        type: _pickingType,
+        allowMultiple: _multiPick,
+        allowedExtensions: (_extension?.isNotEmpty ?? false)
+            ? _extension?.replaceAll(' ', '').split(',')
+            : null,
+      ))
+          ?.files;
     } on PlatformException catch (e) {
       print("Unsupported operation" + e.toString());
+    } catch (ex) {
+      print(ex);
     }
     if (!mounted) return;
     setState(() {
-      isLoadingPath = false;
-      fileName = path != null
-          ? path.split('/').last
-          : paths != null
-              ? paths.keys.toString()
-              : '...';
+      _loadingPath = false;
+      print(_paths!.first.extension);
+      _fileName =
+          _paths != null ? _paths!.map((e) => e.name).toString() : '...';
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('File Picker example app'),
-        ),
-        body:  Center(
-            child:  Padding(
-          padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-          child:  SingleChildScrollView(
-            child:  Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                 Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child:  DropdownButton<dynamic>(
-                      hint:  Text('Select file type'),
-                      value: fileType,
-                      items: <DropdownMenuItem>[
-                        DropdownMenuItem(
-                          child:  Text('Audio'),
-                          value: FileType.audio,
-                        ),
-                         DropdownMenuItem(
-                          child: new Text('Image'),
-                          value: FileType.image,
-                        ),
-                        DropdownMenuItem(
-                          child: new Text('Video'),
-                          value: FileType.video,
-                        ),
-                         DropdownMenuItem(
-                          child: new Text('Any'),
-                          value: FileType.any,
-                        ),
-                      ],
-                      onChanged: (value) => setState(() {
-                            fileType = value;
-                          })),
-                ),
-                ConstrainedBox(
-                  constraints: BoxConstraints.tightFor(width: 200.0),
-                  child: SwitchListTile.adaptive(
-                    title: Text('Pick multiple files',
-                        textAlign: TextAlign.right),
-                    onChanged: (bool value) =>
-                        setState(() => isMultiPick = value),
-                    value: isMultiPick,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 50.0, bottom: 20.0),
-                  child:  RaisedButton(
+    return Center(
+        child: Padding(
+      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Title(color: Colors.black,
+            child: (Text(
+              "Record Video or Audio",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ))),
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: DropdownButton<FileType>(
+                  value: _pickingType,
+                  items: <DropdownMenuItem<FileType>>[
+                    DropdownMenuItem(
+                      child: const Text('FROM AUDIO'),
+                      value: FileType.audio,
+                    ),
+                    DropdownMenuItem(
+                      child: const Text('FROM IMAGE'),
+                      value: FileType.image,
+                    ),
+                    DropdownMenuItem(
+                      child: const Text('FROM VIDEO'),
+                      value: FileType.video,
+                    ),
+                    DropdownMenuItem(
+                      child: const Text('FROM ANY'),
+                      value: FileType.any,
+                    ),
+                  ],
+                  onChanged: (value) => setState(() {
+                        _pickingType = value!;
+                      })),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+              child: Column(
+                children: <Widget>[
+                  ElevatedButton(
                     onPressed: () => _openFileExplorer(),
-                    child: Text("Open file picker"),
+                    child: const Text("Pick Files"),
                   ),
-                ),
-                Builder(
-                  builder: (BuildContext context) => isLoadingPath
-                      ? Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: const CircularProgressIndicator())
-                      : path != null || paths != null
+                ],
+              ),
+            ),
+            Builder(
+              builder: (BuildContext context) => _loadingPath
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: const CircularProgressIndicator(),
+                    )
+                  : _directoryPath != null
+                      ? ListTile(
+                          title: const Text('Directory path'),
+                          subtitle: Text(_directoryPath!),
+                        )
+                      : _paths != null
                           ? Container(
                               padding: const EdgeInsets.only(bottom: 30.0),
                               height: MediaQuery.of(context).size.height * 0.50,
                               child: Scrollbar(
-                                  child:  ListView.separated(
-                                itemCount: paths != null && paths.isNotEmpty
-                                    ? paths.length
+                                  child: ListView.separated(
+                                itemCount: _paths != null && _paths!.isNotEmpty
+                                    ? _paths!.length
                                     : 1,
                                 itemBuilder: (BuildContext context, int index) {
                                   final bool isMultiPath =
-                                      paths != null && paths.isNotEmpty;
-                                  final int fileNo = index + 1;
-                                  final String name = 'File $fileNo : ' +
+                                      _paths != null && _paths!.isNotEmpty;
+                                  final String name = 'File $index: ' +
                                       (isMultiPath
-                                          ? paths.keys.toList()[index]
-                                          : fileName);
-                                  final filePath = isMultiPath
-                                      ? paths.values.toList()[index].toString()
-                                      : path;
+                                          ? _paths!
+                                              .map((e) => e.name)
+                                              .toList()[index]
+                                          : _fileName ?? '...');
+                                  final path = _paths!
+                                      .map((e) => e.path)
+                                      .toList()[index]
+                                      .toString();
+
                                   return ListTile(
                                     title: Text(
                                       name,
                                     ),
-                                    subtitle: Text(filePath),
                                   );
                                 },
                                 separatorBuilder:
                                     (BuildContext context, int index) =>
-                                        Divider(),
+                                        const Divider(),
                               )),
                             )
-                          : Container(),
-                ),
-              ],
+                          : const SizedBox(),
             ),
-          ),
-        )),
+          ],
+        ),
       ),
-    );
+    ));
   }
 }

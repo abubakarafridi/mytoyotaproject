@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_toyota/items/Commentbox.dart';
+
 import 'package:flutter_toyota/items/commenttype.dart';
 import 'package:flutter_toyota/items/drawer.dart';
-import 'package:flutter_toyota/items/file.dart';
+import 'package:flutter_toyota/items/videocam.dart';
 
 class Remarks extends StatelessWidget {
   const Remarks({Key? key}) : super(key: key);
@@ -23,8 +24,8 @@ class Remarks extends StatelessWidget {
           ),
           iconTheme: const IconThemeData(color: Colors.red),
         ),
-        body: SingleChildScrollView(child: Column(children: [comment(),commentbox(),FilePickerDemo()])),
-          
-            );
+        body: SingleChildScrollView(child: Column(children: []),
+        ),
+    );
   }
 }

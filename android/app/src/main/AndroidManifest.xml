@@ -1,9 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.flutter_toyota">
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+
    <application
-        android:label="flutter_toyota"
+        android:label="Toyota\nRating"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -1,21 +1,59 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_toyota/items/classJson.dart';
 import 'package:flutter_toyota/items/drawer.dart';
 import 'package:flutter_toyota/pages/DealearShip.dart';
 import 'package:http/http.dart' as http;
 
-Future<List<ToyotaModelClass>> fetchData() async {
-  final response =
-      await http.get(Uri.parse('http://192.168.1.163/apps/ratting.php'));
 
-  if (response.statusCode == 200) {
-    List jsonResponse = json.decode(response.body);
-    return jsonResponse.map((data) => ToyotaModelClass.fromJson(data)).toList();
-  } else {
-    throw Exception('Unexpected error occured!');
+Future<List<ToyotaModelClass>> fetchCustomer() async
+  {
+    //log.d('getDriverListCustomerWise has been called! $customerId $token');
+    bool hasNetwork = await helper().hasNetwork();
+    EasyLoading.show(status: "Please Wait...");
+
+    if (hasNetwork) {
+      final url = Uri.parse('http://192.168.1.163/apps/ratting.php');
+
+      try {
+        var response = await http.get(
+          url,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        );
+        log('Data is loading');
+        //var data = json.decode(response.body);
+
+        if (response.statusCode == 200) {
+          log('customerList: 200');
+          log(response.body);
+          final List<ToyotaModelClass> customerList = toyotaModelClassFromJson(response.body);
+          log('customerList: ${customerList.length}');
+          EasyLoading.dismiss();
+          
+          return customerList;
+        }
+        else{
+          EasyLoading.dismiss();
+          EasyLoading.showError(duration: const Duration(milliseconds: 3500), 'Could not Fetch, try again later.\n${response.statusCode}');
+
+          log('customerListResponse: ${response.statusCode}');
+        }
+      }
+      catch (error){
+        EasyLoading.dismiss();
+        EasyLoading.showError(duration: const Duration(milliseconds: 3500), 'Could not Fetch, try again later.\n$error');
+        log('customerListAPI:Error $error');
+      }
+    }
+    return [];
   }
-}
+  
+  
 
 class index extends StatefulWidget {
   const index({Key? key}) : super(key: key);
@@ -32,7 +70,7 @@ class _indexState extends State<index> {
     super.initState();
     Future.delayed(Duration.zero).then((value) {
       setState(() {
-        fetchData().then((value) {
+        fetchCustomer().then((value) {
           setState(() {
             futureData = value;
           });
@@ -108,5 +146,19 @@ class _indexState extends State<index> {
               ),
       ),
     );
+  }
+}
+
+class helper{
+   Future<bool> hasNetwork() async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      //print('FuncHN+ $result');
+
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } on SocketException {
+      //print('FuncHN- $error');
+      return false;
+    }
   }
 }

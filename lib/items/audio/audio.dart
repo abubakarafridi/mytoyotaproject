@@ -1,8 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:record/record.dart';
+import 'package:http/http.dart' as http;
 
 class AudioRecorder extends StatefulWidget {
   @override
@@ -55,6 +60,12 @@ class _AudioRecorderState extends State<AudioRecorder> {
     _recordDuration = 0;
 
     final path = await _audioRecorder.stop();
+
+    File audioFile = new File(path!);
+    List<int> audioBytes = audioFile.readAsBytesSync();
+    String base64audio = base64Encode(audioBytes);
+
+    log("BASE64 $base64audio");
   }
 
   Future<void> _pause() async {
@@ -200,5 +211,84 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return AudioRecorder();
+  }
+}
+
+Future<bool> uploadaudio(String audioJSON) async {
+  log('updateDrivers Val: $audioJSON ');
+  //log('uploadVideo Called');
+  EasyLoading.show(status: "Please Wait...");
+  bool hasNetwork = await helper().hasNetwork();
+  bool isAuthenticated = false;
+
+  if (hasNetwork) {
+    //log('hasNetwork Called ${dotenv.env['Login']}');
+
+    final url = Uri.parse("");
+    //log('hasNetwork1 Called');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({
+          "audioJson": audioJSON,
+        }),
+      );
+      //log('hasNetwork2 Called');
+
+      if (response.statusCode == 200) {
+        //log('response200 Called');
+
+        //final jsonDecoded = jsonDecode(response.body);
+        //String message = jsonDecoded['Message'];
+        //log(_token);
+
+        EasyLoading.dismiss();
+        EasyLoading.showToast("Uploaded!",
+            duration: const Duration(milliseconds: 2000),
+            toastPosition: EasyLoadingToastPosition.bottom);
+        //log('Data : $message  $token' );
+        isAuthenticated = true;
+      } else {
+        EasyLoading.dismiss();
+        //final responseData = json.decode(response.body);
+        //String errorMessage = responseData['Message'];
+        EasyLoading.showError(
+            dismissOnTap: true,
+            duration: const Duration(milliseconds: 3500),
+            response.statusCode.toString());
+
+        log('!response200 Called}');
+      }
+    } catch (error) {
+      EasyLoading.dismiss();
+      EasyLoading.showError(
+          duration: const Duration(milliseconds: 3500),
+          'Could not update, try again later..\n$error');
+      log('Error Called $error');
+
+      isAuthenticated = false;
+    }
+  } else {
+    EasyLoading.showError(
+        duration: const Duration(milliseconds: 3500),
+        'Network issue, try again later.');
+    log('!hasNetwork Called');
+  }
+  return isAuthenticated;
+}
+
+class helper {
+  Future<bool> hasNetwork() async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      //print('FuncHN+ $result');
+
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } on SocketException {
+      //print('FuncHN- $error');
+      return false;
+    }
   }
 }

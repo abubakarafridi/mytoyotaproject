@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_toyota/pages/DealearShip.dart';
-import 'package:flutter_toyota/pages/Remarks.dart';
-import 'package:flutter_toyota/pages/advisor.dart';
-import 'package:flutter_toyota/pages/list.dart';
+import 'package:flutter_toyota/screens/DealearShip.dart';
+import 'package:flutter_toyota/screens/Remarks.dart';
+import 'package:flutter_toyota/screens/advisor.dart';
+import 'package:flutter_toyota/screens/list.dart';
+import 'package:flutter_toyota/routes.dart';
+
 
 void main() {
   runApp(MaterialApp(
@@ -19,13 +21,6 @@ void main() {
     },
   ));
   configLoading();
-}
-
-class MyRoutes {
-  static String listRoute = "list";
-  static String DealearshipRoute = "Dealear";
-  static String AdvisorRoute = "Advisor";
-  static String RemarksRoute = "Remarksc";
 }
 
 void configLoading() {

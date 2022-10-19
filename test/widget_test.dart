@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_toyota/pages/list.dart';
+import 'package:flutter_toyota/screens/list.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {

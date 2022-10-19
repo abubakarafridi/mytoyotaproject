@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_toyota/items/drawer.dart';
-import 'package:flutter_toyota/items/stars.dart';
-import 'package:flutter_toyota/pages/advisor.dart';
+import 'package:flutter_toyota/widgets/drawer.dart';
+import 'package:flutter_toyota/widgets/dealership/stars.dart';
+import 'package:flutter_toyota/screens/advisor.dart';
 
 class DealearShip extends StatelessWidget {
   const DealearShip({Key? key}) : super(key: key);

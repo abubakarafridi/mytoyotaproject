@@ -1,10 +1,9 @@
 
-
 import 'package:flutter/material.dart';
-import 'package:flutter_toyota/items/Commentbox.dart';
-import 'package:flutter_toyota/items/commenttype.dart';
-import 'package:flutter_toyota/items/drawer.dart';
-import 'package:flutter_toyota/items/videoaudio.dart';
+import 'package:flutter_toyota/widgets/Remarks/comments/Commentbox.dart';
+import 'package:flutter_toyota/widgets/Remarks/comments/commenttype.dart';
+import 'package:flutter_toyota/widgets/drawer.dart';
+import '../widgets/Remarks/audio/videoaudio.dart';
 
 class Remarks extends StatelessWidget {
   const Remarks({Key? key}) : super(key: key);

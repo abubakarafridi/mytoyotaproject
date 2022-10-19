@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_toyota/items/drawer.dart';
-import 'package:flutter_toyota/items/stars.dart';
-import 'package:flutter_toyota/pages/Remarks.dart';
+import 'package:flutter_toyota/widgets/drawer.dart';
+import 'package:flutter_toyota/widgets/dealership/stars.dart';
+import 'package:flutter_toyota/screens/Remarks.dart';
 
 class Advisor extends StatelessWidget {
   const Advisor({Key? key}) : super(key: key);

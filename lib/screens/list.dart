@@ -3,9 +3,9 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_toyota/items/classJson.dart';
-import 'package:flutter_toyota/items/drawer.dart';
-import 'package:flutter_toyota/pages/DealearShip.dart';
+import 'package:flutter_toyota/models/classJson.dart';
+import 'package:flutter_toyota/widgets/drawer.dart';
+import 'package:flutter_toyota/screens/DealearShip.dart';
 import 'package:http/http.dart' as http;
 
 
